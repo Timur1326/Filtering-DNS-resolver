@@ -12,5 +12,6 @@ typedef struct {
 
 void load_filter(const char *fname, int *verbose);
 
+extern blacklist_t blacklist;
 
 #endif
