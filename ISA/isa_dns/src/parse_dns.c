@@ -1,9 +1,13 @@
 #include <stdio.h>
-#include <netdb.h>
-#include <string.h>     // strlen, memset
-#include <strings.h>    // strcasecmp
+#include <string.h>
+#include <strings.h>
 #include <stdint.h>
+
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
 #include <arpa/inet.h>
+
 #include "parse_dns.h"
 #include "response_dns.h"
 #include "read_filter.h"

@@ -28,4 +28,5 @@ int resolve_ipv4(const char *input, struct in_addr *out_ip) {
         freeaddrinfo(res);
         return 1;
     }    
+    return 0;
 }
