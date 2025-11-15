@@ -45,9 +45,14 @@ void load_filter(const char *fname, int *verbose) {
             fprintf(stderr, "Invalid domain in file: %s\n", line);
             continue;
         }
+        if (strlen(line) >= MAX_LEN) {
+            fprintf(stderr, "[WARN] domain too long, skipping: %s\n", line);
+            continue;
+        }
 
-        strncpy(blacklist.list[blacklist.count], line, MAX_LEN-1);
-        blacklist.list[blacklist.count][MAX_LEN-1] = '\0';
+        strcpy(blacklist.list[blacklist.count], line);
+
+       
         blacklist.count++;
 
         if (blacklist.count >= MAX_DOMAINS) break;
