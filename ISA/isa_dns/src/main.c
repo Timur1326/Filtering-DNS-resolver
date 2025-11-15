@@ -1,11 +1,12 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/time.h>
-
+#include <unistd.h>  
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+#include <signal.h>
 
 #include "response_dns.h"
 #include "parse_dns.h"
@@ -14,9 +15,19 @@
 #include "utils_dns.h"
 
 
+
+volatile sig_atomic_t stop = 0;
+
+void handle_signal(int sig) {
+    (void)sig;    
+    stop = 1;     
+}
+
 int main(int argc, char **argv) {
     args_t args;
     parse_args(argc, argv, &args);
+
+    signal(SIGINT, handle_signal);
 
     load_filter(args.filter_file, &args.verbose);
 
@@ -36,6 +47,7 @@ int main(int argc, char **argv) {
     // timeout pro resolver
     struct timeval tv = {0, 500000};
     setsockopt(s_res, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(tv));
+    setsockopt(s_listen, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(tv));
 
     // resolver adresa
     struct sockaddr_in raddr;
@@ -68,7 +80,7 @@ int main(int argc, char **argv) {
 
     unsigned char buf[512];
 
-    while (1) {
+    while (!stop) {
         struct sockaddr_in client;
         socklen_t clen = sizeof(client);
 
@@ -89,6 +101,10 @@ int main(int argc, char **argv) {
             args.verbose // verbose mód
         );
     }
+
+    close(s_listen);
+    close(s_res);
+    fprintf(stderr, "[INFO] Server stopped\n");
 
     return 0;
 }
