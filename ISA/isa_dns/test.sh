@@ -1,4 +1,4 @@
-#!/bin/bash
+/usr/local/bin/bash
 
 DNS="./dns"
 PORT=5000

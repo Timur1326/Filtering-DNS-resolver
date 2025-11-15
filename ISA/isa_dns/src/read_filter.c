@@ -46,7 +46,7 @@ void load_filter(const char *fname, int *verbose) {
             continue;
         }
         if (strlen(line) >= MAX_LEN) {
-            fprintf(stderr, "[WARN] domain too long, skipping: %s\n", line);
+            fprintf(stderr, "[-] domain too long, skipping: %s\n", line);
             continue;
         }
 
@@ -61,5 +61,5 @@ void load_filter(const char *fname, int *verbose) {
     fclose(f);
 
     if (verbose)
-        fprintf(stderr, "[INFO] loaded %d domains\n", blacklist.count);
+        fprintf(stderr, "[+] loaded %d domains\n", blacklist.count);
 }

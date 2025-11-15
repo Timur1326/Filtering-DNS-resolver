@@ -15,7 +15,6 @@
 #include "utils_dns.h"
 
 
-
 volatile sig_atomic_t stop = 0;
 
 void handle_signal(int sig) {
@@ -24,36 +23,38 @@ void handle_signal(int sig) {
 }
 
 int main(int argc, char **argv) {
-    args_t args;
-    parse_args(argc, argv, &args);
 
     signal(SIGINT, handle_signal);
+
+    args_t args;
+
+    parse_args(argc, argv, &args);
 
     load_filter(args.filter_file, &args.verbose);
 
     // socket klient → server
-    int s_listen = socket(AF_INET, SOCK_DGRAM, 0);
-    if (s_listen < 0) { 
+    int socket_client = socket(AF_INET, SOCK_DGRAM, 0);
+    if (socket_client < 0) { 
         perror("socket"); exit(1); 
     }
 
     // socket server → resolver
-    int s_res = socket(AF_INET, SOCK_DGRAM, 0);
-    if (s_res < 0) { 
+    int socket_resolver = socket(AF_INET, SOCK_DGRAM, 0);
+    if (socket_resolver < 0) { 
         perror("resolver socket"); 
         exit(1); 
     }
 
     // timeout pro resolver
-    struct timeval tv = {0, 500000};
-    setsockopt(s_res, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(tv));
-    setsockopt(s_listen, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(tv));
+    struct timeval timeout = {0, 500000};
+    setsockopt(socket_resolver, SOL_SOCKET, SO_RCVTIMEO, &timeout, sizeof(timeout));
+    setsockopt(socket_client, SOL_SOCKET, SO_RCVTIMEO, &timeout, sizeof(timeout));
 
     // resolver adresa
-    struct sockaddr_in raddr;
-    memset(&raddr, 0, sizeof(raddr));
-    raddr.sin_family = AF_INET;
-    raddr.sin_port   = htons(53);
+    struct sockaddr_in res_addr;
+    memset(&res_addr, 0, sizeof(res_addr));
+    res_addr.sin_family = AF_INET;
+    res_addr.sin_port   = htons(53);
 
     struct in_addr ip4;
 
@@ -61,50 +62,50 @@ int main(int argc, char **argv) {
         exit(1); 
     }
 
-    raddr.sin_addr = ip4;
+    res_addr.sin_addr = ip4;
 
     // bind serverového portu
-    struct sockaddr_in laddr;
-    memset(&laddr, 0, sizeof(laddr));
-    laddr.sin_family = AF_INET;
-    laddr.sin_port   = htons(args.port);
-    laddr.sin_addr.s_addr = INADDR_ANY;
+    struct sockaddr_in local_addr;
+    memset(&local_addr, 0, sizeof(local_addr));
+    local_addr.sin_family = AF_INET;
+    local_addr.sin_port   = htons(args.port);
+    local_addr.sin_addr.s_addr = INADDR_ANY;
 
-    if (bind(s_listen, (struct sockaddr*)&laddr, sizeof(laddr)) < 0) {
+    if (bind(socket_client, (struct sockaddr*)&local_addr, sizeof(local_addr)) < 0) {
         perror("bind");
         exit(1);
     }
 
     if (args.verbose)
-        fprintf(stderr, "[INFO] listening on port %d\n", args.port);
+        fprintf(stderr, "[+] listening on port %d\n", args.port);
 
     unsigned char buf[512];
 
     while (!stop) {
-        struct sockaddr_in client;
-        socklen_t clen = sizeof(client);
+        struct sockaddr_in client_addr;
+        socklen_t client_len = sizeof(client_addr);
 
-        int n = recvfrom(s_listen, buf, sizeof(buf), 0,
-                         (struct sockaddr*)&client, &clen);
+        int size = recvfrom(socket_client, buf, sizeof(buf), 0,
+                         (struct sockaddr*)&client_addr, &client_len);
 
-        if (n <= 0)
+        if (size <= 0)
             continue;
 
         process_client_query(
-            s_listen,    // socket → klient
-            s_res,       // socket → resolver
+            socket_client,    // socket → klient
+            socket_resolver,       // socket → resolver
             buf,         // packet
-            n,           // velikost
-            &client,     // adresa klienta
-            clen,
-            &raddr,      // resolver adresa
+            size,           // velikost
+            &client_addr,     // adresa klienta
+            client_len,
+            &res_addr,      // resolver adresa
             args.verbose // verbose mód
         );
     }
 
-    close(s_listen);
-    close(s_res);
-    fprintf(stderr, "[INFO] Server stopped\n");
+    close(socket_client);
+    close(socket_resolver);
+    fprintf(stderr, "\n[+] Server stopped\n");
 
     return 0;
 }

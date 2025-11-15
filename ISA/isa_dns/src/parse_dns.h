@@ -21,6 +21,6 @@ typedef struct {
 } dns_question_t;
 
 
-void process_client_query(int listen_sock, int resolver_sock, unsigned char *query, int qlen, struct sockaddr_in *client, socklen_t clen, struct sockaddr_in *resolver_addr, int verbose);
+void process_client_query(int socket_client, int socket_resolver, unsigned char *query, int size, struct sockaddr_in *client_addr, socklen_t client_len, struct sockaddr_in *resolver_addr, int verbose);
 
 #endif
