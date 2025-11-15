@@ -1,6 +1,14 @@
 #include <stdio.h>
-#include <netdb.h>
-#include <arpa/inet.h>
+#include <string.h>
+#include <stdlib.h>
+
+#include <sys/types.h>
+#include <sys/socket.h>   // socket(), SOCK_DGRAM, SOL_SOCKET, etc.
+#include <netinet/in.h>   // struct sockaddr_in, AF_INET
+#include <arpa/inet.h>    // inet_pton
+#include <netdb.h>        // getaddrinfo, struct addrinfo
+
+#include "utils_dns.h"
 #include <string.h>
 #include "utils_dns.h"
 
