@@ -1,10 +1,10 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-
-
-
 #include "read_filter.h"
+
+blacklist_t blacklist;
+
 
 int domain_ok(const char *d) {
     int letters = 0;
@@ -47,7 +47,7 @@ void load_filter(const char *fname, int *verbose) {
         }
 
         strncpy(blacklist.list[blacklist.count], line, MAX_LEN-1);
-        blacklist.list[blacklist.count][MAX_LEN-1] = 0;
+        blacklist.list[blacklist.count][MAX_LEN-1] = '\0';
         blacklist.count++;
 
         if (blacklist.count >= MAX_DOMAINS) break;
