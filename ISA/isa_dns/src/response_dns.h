@@ -1,3 +1,7 @@
+/* 
+    Author: Nurtdinov Timur   
+    Login:  xnurtd00
+*/
 #ifndef RESPONSE_DNS_H
 #define RESPONSE_DNS_H
 

@@ -1,3 +1,7 @@
+/* 
+    Author: Nurtdinov Timur   
+    Login:  xnurtd00
+*/
 #ifndef UTILS_DNS_H
 #define UTILS_DNS_H
 

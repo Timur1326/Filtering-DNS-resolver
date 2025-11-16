@@ -1,17 +1,27 @@
+/* 
+    Author: Nurtdinov Timur   
+    Login:  xnurtd00
+*/
 #ifndef READ_FILTER_H
 #define READ_FILTER_H
 
-
+// Maximum number of domains in filter
 #define MAX_DOMAINS 5000
-#define MAX_LEN     256
+// Maximum length of a domain
+#define MAX_LEN_OF_DOMAIN     256
 
+
+/**
+ * @brief Structure to hold the list of filtered domains
+ *  list - Array of domain strings
+ *  count - Number of domains in the list
+ */
 typedef struct {
-    char list[MAX_DOMAINS][MAX_LEN];
+    char list[MAX_DOMAINS][MAX_LEN_OF_DOMAIN];
     int count;
-} blacklist_t;
+} filter_t;
 
 void load_filter(const char *fname, int *verbose);
 
-extern blacklist_t blacklist;
-
+extern filter_t filter;
 #endif
