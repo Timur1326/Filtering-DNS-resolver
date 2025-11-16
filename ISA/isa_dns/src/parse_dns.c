@@ -43,7 +43,6 @@ static int parse_qname(unsigned char *packet, int offset, char *output, int outp
         }
     }
 }
-
  
 int domain_blocked(const char *domain)
 {
@@ -141,7 +140,7 @@ void process_client_query(int socket_client, int socket_resolver, unsigned char 
     if (verbose) {
         fprintf(stderr, "[+] %s (type=%u)\n", q.qname, q.qtype);
     }
-
+    
     // 3) Тип != A → NOTIMP
     if (q.qtype != A_TYPE) {
         send_rcode(socket_client, query, size, NOTIMP_RCODE, client_addr, client_len);

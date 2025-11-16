@@ -6,25 +6,28 @@
 blacklist_t blacklist;
 
 
-int domain_ok(const char *d) {
-    int letters = 0;
-    for (int i = 0; d[i]; i++) {
-        char c = d[i];
-
-        if ((c >= 'a' && c <= 'z') ||
-            (c >= 'A' && c <= 'Z'))
-            letters = 1;
-
-        if (!((c >= 'a' && c <= 'z') ||
-              (c >= 'A' && c <= 'Z') ||
-              (c >= '0' && c <= '9') ||
-              c == '.' || c == '-'))
-            return 0;
-    }
-    return letters;
+static int is_valid_char(char c) {
+    return ((c >= 'a' && c <= 'z') ||
+            (c >= 'A' && c <= 'Z') ||
+            (c >= '0' && c <= '9') ||
+            c == '.' || c == '-');
 }
 
-// -----------------------------
+static int check_domain(const char *domain) {
+    int has_letter = 0;
+
+    for (int i = 0; domain[i]; i++) {
+        char c = domain[i];
+
+        if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z'))
+            has_letter = 1;
+
+        if (!is_valid_char(c))
+            return 0;
+    }
+
+    return has_letter;
+}
 void load_filter(const char *fname, int *verbose) {
     FILE *f = fopen(fname, "r");
     if (!f) {
@@ -41,7 +44,7 @@ void load_filter(const char *fname, int *verbose) {
         if (l == 0 || line[0] == '#')
             continue;
 
-        if (!domain_ok(line)) {
+        if (!check_domain(line)) {
             fprintf(stderr, "Invalid domain in file: %s\n", line);
             continue;
         }

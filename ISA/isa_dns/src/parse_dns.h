@@ -9,6 +9,7 @@
 
 #define A_TYPE 1
 
+#define FORM_ERR_RCODE 1
 #define SER_FAIL_RCODE 2
 #define NOTIMP_RCODE 4
 #define REFUSED_RCODE 5
