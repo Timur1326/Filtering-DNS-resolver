@@ -1,4 +1,4 @@
-Filtering DNS resolver (dns)
+**Filtering DNS resolver (dns)**
 ===========================
 
 Author: Timur Nurtdinov
@@ -6,7 +6,7 @@ Login:  xnurtd00
 Date:   17.11.2025
 
 
-1. Description
+1. **Description**
 --------------
 DNS (Domain Name System) is the system that translates human-readable domain
 names into IP addresses used by computers to communicate with each other.
@@ -33,7 +33,7 @@ The server runs until it is stopped with SIGINT (Ctrl+C), after which it
 closes its sockets and exits cleanly.
 
 
-2. Build
+2. **Build**
 --------
 Run make in the project directory:
 
@@ -47,7 +47,7 @@ Requirements: a C compiler (gcc) and a POSIX environment. The code is built
 with `-Wall -Wextra -O2`.
 
 
-3. Usage
+3. **Usage**
 --------
     ./dns -s server [-p port] -f filter_file [-v]
 
@@ -65,7 +65,7 @@ If the arguments are invalid or a required option is missing, the program
 prints a short usage message to standard error and exits with code 1.
 
 
-4. Filter file format
+4. **Filter file format**
 ---------------------
 One domain per line. The parser:
 
@@ -81,7 +81,7 @@ Up to 5000 domains are loaded. The filter is read once at start-up.
 An example file, `blocked.txt`, is included.
 
 
-5. Examples
+5. **Examples**
 -----------
 Start the server on an unprivileged port and forward to Google Public DNS:
 
@@ -100,7 +100,7 @@ On the default DNS port (requires root):
 
 
 
-1. File list
+6. **File list**
 ------------
     README
     Makefile
