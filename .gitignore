@@ -1,0 +1,6 @@
+# Build artifacts
+/dns
+*.o
+
+# Runtime
+server.log
